@@ -1,0 +1,37 @@
+version: "3.4"
+services:
+  nginx:
+    image: linuxserver/swag:latest
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - URL=scode.ovh
+      - SUBDOMAINS=www,cdn,git,drone,grafana
+      - VALIDATION=http
+      - EMAIL=admin@scode.ovh
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - "nginx:/config"
+      - "ci-deploy:/ci-deploy:ro"
+      - "standardnotes-extensions:/sn-extensions:ro"
+    networks:
+      - nginx
+    hostname: nginx
+    container_name: nginx
+    restart: always
+volumes:
+  nginx:
+    external: true
+  ci-deploy:
+    external: true
+  standardnotes-extensions:
+    external: true
+networks:
+  nginx:
+    external:
+      name: nginx

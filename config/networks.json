@@ -1,0 +1,6 @@
+[
+  {"name": "nginx"},
+  {"name": "postgres", "internal": true},
+  {"name": "idrone", "internal": true},
+  {"name": "grafana", "internal": true}
+]

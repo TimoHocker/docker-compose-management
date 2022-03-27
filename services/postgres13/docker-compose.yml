@@ -1,0 +1,20 @@
+version: "3.4"
+services:
+  postgres13:
+    image: postgres:13
+    environment:
+      - POSTGRES_PASSWORD=foobar
+    volumes:
+      - "postgres13:/var/lib/postgresql/data"
+    networks:
+      - postgres
+    hostname: postgres13
+    container_name: postgres13
+    restart: always
+volumes:
+  postgres13:
+    external: true
+networks:
+  postgres:
+    external:
+      name: postgres

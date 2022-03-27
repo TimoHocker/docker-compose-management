@@ -1,0 +1,25 @@
+version: "3.4"
+services:
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@scode.ovh
+      PGADMIN_DEFAULT_PASSWORD: 1234password
+    volumes:
+      - "pgadmin:/var/lib/pgadmin"
+    networks:
+      - vnc
+      - postgres
+    hostname: pgadmin
+    container_name: pgadmin
+    restart: always
+volumes:
+  pgadmin:
+    external: true
+networks:
+  vnc:
+    external:
+      name: vnc
+  postgres:
+    external:
+      name: postgres

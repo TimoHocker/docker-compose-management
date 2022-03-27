@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  loki:
+    image: grafana/loki:2.3.0
+    volumes:
+      - ./loki.yml:/etc/loki/local-config.yaml
+      - loki:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    hostname: loki
+    container_name: loki
+    networks:
+      - loki
+      - grafana
+
+  promtail:
+    image: grafana/promtail:2.3.0
+    volumes:
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /home/timo/log:/backup_log:ro
+      - ./promtail.yml:/etc/promtail/config.yml:ro
+      - nginx:/nginx:ro
+    command: -config.file=/etc/promtail/config.yml
+    hostname: promtail
+    container_name: promtail
+    networks:
+      - loki
+
+volumes:
+  loki:
+    external: true
+  nginx:
+    external: true
+networks:
+  grafana:
+    external:
+      name: grafana
+  loki:
+    driver: bridge
+    internal: true
+

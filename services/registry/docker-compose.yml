@@ -1,0 +1,23 @@
+version: "3.4"
+services:
+  registry:
+    image: registry:2
+    volumes:
+      - "registry:/var/lib/registry"
+    ports:
+      - "5000:5000"
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=True
+    networks:
+      - idrone
+      - default
+    hostname: registry
+    container_name: registry
+    restart: always
+volumes:
+  registry:
+    external: true
+networks:
+  idrone:
+    external:
+      name: idrone

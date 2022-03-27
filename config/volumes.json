@@ -1,0 +1,49 @@
+[
+  {
+    "name": "letsencrypt",
+    "backup": false
+  },
+  {
+    "name": "idrone"
+  },
+  {
+    "name": "ci-deploy",
+    "backup": false
+  },
+  {
+    "name": "gitea",
+    "backup_exclude": [
+      "gitea/log/"
+    ]
+  },
+  {
+    "name": "nginx",
+    "backup_exclude": [
+      "nginx/proxy-confs/*.sample",
+      "fail2ban/",
+      "donotedit*",
+      "log/"
+    ]
+  },
+  {
+    "name": "pgadmin"
+  },
+  {
+    "name": "postgres13"
+  },
+  {
+    "name": "registry",
+    "backup": false
+  },
+  {
+    "name": "grafana"
+  },
+  {
+    "name": "prometheus",
+    "backup": false
+  },
+  {
+    "name": "loki",
+    "backup": false
+  }
+]

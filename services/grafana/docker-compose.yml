@@ -1,0 +1,24 @@
+version: "3.4"
+services:
+  grafana:
+    image: grafana/grafana
+    networks:
+      - nginx
+      - grafana
+    volumes:
+      - grafana:/var/lib/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini
+    hostname: grafana
+    container_name: grafana
+    restart: always
+volumes:
+  grafana:
+    external: true
+networks:
+  nginx:
+    external:
+      name: nginx
+  grafana:
+    external:
+      name: grafana
+
