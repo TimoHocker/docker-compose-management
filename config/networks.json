@@ -2,5 +2,6 @@
   {"name": "nginx"},
   {"name": "postgres", "internal": true},
   {"name": "idrone", "internal": true},
-  {"name": "grafana", "internal": true}
+  {"name": "grafana", "internal": true},
+  {"name": "pgadmin", "internal": true, "subnet": "172.16.10.0/24"}
 ]
