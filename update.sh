@@ -1,5 +1,3 @@
 #!/bin/bash
 
-./init.sh NONE PULL
-./init.sh DOWN
-./init.sh UP
+./init.sh UP PULL
