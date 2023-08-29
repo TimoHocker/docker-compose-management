@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -18,8 +17,6 @@ volumes:
     external: true
 networks:
   pgadmin:
-    external:
-      name: pgadmin
+    external: true
   postgres:
-    external:
-      name: postgres
+    external: true

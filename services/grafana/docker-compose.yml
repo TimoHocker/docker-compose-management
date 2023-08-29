@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   grafana:
     image: grafana/grafana
@@ -16,9 +15,7 @@ volumes:
     external: true
 networks:
   nginx:
-    external:
-      name: nginx
+    external: true
   grafana:
-    external:
-      name: grafana
+    external: true
 

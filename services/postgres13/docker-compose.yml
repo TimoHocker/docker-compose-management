@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   postgres13:
     image: postgres:13
@@ -16,5 +15,4 @@ volumes:
     external: true
 networks:
   postgres:
-    external:
-      name: postgres
+    external: true

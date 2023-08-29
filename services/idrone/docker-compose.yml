@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   idrone:
     image: drone/drone:latest
@@ -51,8 +50,6 @@ volumes:
     external: true
 networks:
   nginx:
-    external:
-      name: nginx
+    external: true
   idrone:
-    external:
-      name: idrone
+    external: true

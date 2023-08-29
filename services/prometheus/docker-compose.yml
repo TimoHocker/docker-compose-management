@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   prometheus:
     image: prom/prometheus
@@ -46,8 +45,7 @@ volumes:
     external: true
 networks:
   grafana:
-    external:
-      name: grafana
+    external: true
   prom_int:
     driver: bridge
     internal: true
