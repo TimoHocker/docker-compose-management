@@ -1,0 +1,6 @@
+{
+  "gitea": ["postgres13"],
+  "nginx": ["gitea", "grafana", "idrone"],
+  "grafana": ["prometheus", "loki"],
+  "pgadmin": ["postgres13"]
+}

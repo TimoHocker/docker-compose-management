@@ -1,1 +1,5 @@
+/node_modules/
+/dist/
 /filter
+/.nyc_output/
+/coverage/
