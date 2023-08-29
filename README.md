@@ -85,8 +85,3 @@ This script pulls all images and restarts the services.
 
 This script creates all necessary networks and volumes. It is run automatically
 by the other init scripts.
-
-### nmap.js
-
-This node.js script creates a graphviz graph of all networks and their attached
-services.
