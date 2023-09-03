@@ -82,6 +82,5 @@ export class Store {
     await this.read_networks ();
     await this.read_volumes ();
     await this.read_services ();
-    console.log (JSON.stringify (this, null, 2));
   }
 }
