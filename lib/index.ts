@@ -1,5 +1,6 @@
 import { CommandType } from './command_definition';
 import { do_down, do_pull, do_up } from './commands';
+import { Store } from './store';
 
 const argv = process.argv.slice (2);
 
@@ -36,3 +37,10 @@ switch (type) {
   default:
     throw new Error (`Unknown command type: ${type}`);
 }
+
+async function main () {
+  const store = (new Store);
+  await store.read_config ();
+}
+
+main ();

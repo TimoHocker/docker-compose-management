@@ -1,25 +1,16 @@
-import assert from 'assert';
+import { plainToClassFromExist } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsString, validateSync } from 'class-validator';
 
 export class Network {
-  public name: string;
-  public internal: boolean;
-  public subnet: string;
+  @IsString ()
+  @IsNotEmpty ()
+  public name = '';
 
-  public constructor (data: Record<string, unknown>) {
-    this.name = data.name as string;
-    assert (
-      typeof this.name === 'string' && this.name.length > 0,
-      'Network name is required'
-    );
+  @IsBoolean ()
+  public internal = false;
 
-    this.internal = data.internal as boolean;
-    if (typeof this.internal !== 'boolean')
-      this.internal = false;
-
-    this.subnet = data.subnet as string;
-    if (typeof this.subnet !== 'string')
-      this.subnet = '';
-  }
+  @IsString ()
+  public subnet = '';
 
   public to_command (): string {
     let command = 'docker network create';
@@ -29,5 +20,15 @@ export class Network {
       command += ` --subnet ${this.subnet}`;
     command += ` ${this.name}`;
     return command;
+  }
+
+  public static from_json (data: Record<string, unknown>): Network {
+    const net = (new Network);
+    plainToClassFromExist (net, data);
+    validateSync (
+      net,
+      { forbidNonWhitelisted: true, forbidUnknownValues: true }
+    );
+    return net;
   }
 }
