@@ -1,30 +1,33 @@
-import assert from 'assert';
+import { plainToClassFromExist } from 'class-transformer';
+import {
+  IsString, IsNotEmpty, IsArray,
+  IsBoolean, validateSync
+} from 'class-validator';
 
-export class Network {
-  public name: string;
-  public backup: boolean;
+export class Volume {
+  @IsString ()
+  @IsNotEmpty ()
+  public name = '';
+
+  @IsBoolean ()
+  public backup = true;
+
+  @IsArray ()
+  @IsString ({ each: true })
+  @IsNotEmpty ({ each: true })
   public backup_exclude: string[] = [];
-
-  public constructor (data: Record<string, unknown>) {
-    this.name = data.name as string;
-    assert (
-      typeof this.name === 'string' && this.name.length > 0,
-      'Volume name is required'
-    );
-
-    this.backup = data.backup as boolean;
-    if (typeof this.backup !== 'boolean')
-      this.backup = true;
-
-    if (Array.isArray (data.backup_exclude)) {
-      for (const item of data.backup_exclude) {
-        if (typeof item === 'string' && item.length > 0)
-          this.backup_exclude.push (item);
-      }
-    }
-  }
 
   public to_command (): string {
     return `docker volume create ${this.name}`;
+  }
+
+  public static from_json (data: Record<string, unknown>): Volume {
+    const vol = (new Volume);
+    plainToClassFromExist (vol, data);
+    validateSync (
+      vol,
+      { forbidNonWhitelisted: true, forbidUnknownValues: true }
+    );
+    return vol;
   }
 }
