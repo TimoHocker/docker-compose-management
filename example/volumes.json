@@ -22,7 +22,8 @@
       "nginx/proxy-confs/*.sample",
       "fail2ban/",
       "donotedit*",
-      "log/"
+      "log/",
+      "../**/*.pid"
     ]
   },
   {

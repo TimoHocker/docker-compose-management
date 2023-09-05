@@ -1,5 +1,5 @@
 import { CommandType } from './command_definition';
-import { do_down, do_pull, do_up } from './commands';
+import { do_create_filter, do_down, do_pull, do_up } from './commands';
 import { Store } from './store';
 
 async function main () {
@@ -15,6 +15,8 @@ async function main () {
     type = 'pull';
   else if (argv.includes ('restart'))
     type = 'restart';
+  else if (argv.includes ('create_filter'))
+    type = 'create_filter';
 
   let include_passive = false;
   if (argv.includes ('--include-passive'))
@@ -37,6 +39,9 @@ async function main () {
     case 'restart':
       await do_down (store);
       await do_up (store, include_passive, pull);
+      break;
+    case 'create_filter':
+      await do_create_filter (store);
       break;
     default:
       throw new Error (`Unknown command type: ${type}`);

@@ -1,2 +1,2 @@
-export type CommandType = 'down' | 'pull' | 'restart' | 'up'
+export type CommandType = 'create_filter' | 'down' | 'pull' | 'restart' | 'up'
 

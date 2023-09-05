@@ -1,3 +1,5 @@
+import path from 'path';
+import fs from 'fs/promises';
 import { Store } from './store';
 
 async function init_structure (store: Store): Promise<void> {
@@ -30,4 +32,23 @@ export async function do_down (store: Store): Promise<void> {
 export async function do_pull (store: Store): Promise<void> {
   for (const service of store.services)
     await service.pull ();
+}
+
+export async function do_create_filter (store: Store): Promise<void> {
+  const filter_lines = [];
+  const backup_volumes = store.volumes.filter ((volume) => volume.backup)
+    .sort ((a, b) => a.name.localeCompare (b.name));
+  for (const volume of backup_volumes)
+    filter_lines.push (`+ /${volume.name}/`);
+  filter_lines.push ('- /*');
+
+  for (const volume of backup_volumes) {
+    for (const exclude of volume.backup_exclude) {
+      const link = path.normalize (`/${volume.name}/_data/${exclude}`)
+        .replace (/\\/gu, '/');
+      filter_lines.push (`- ${link}`);
+    }
+  }
+
+  await fs.writeFile ('filter', filter_lines.join ('\n'));
 }
