@@ -23,7 +23,7 @@ export async function do_up (
 }
 
 export async function do_down (store: Store): Promise<void> {
-  for (const service of store.services)
+  for (const service of [ ...store.services ].reverse ())
     await service.down ();
 }
 
