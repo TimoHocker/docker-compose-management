@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 export function exec_command (
   command: string,
   args: string[],
-  cwd: string
+  cwd = '.'
 ): Promise<void> {
   return new Promise<void> ((resolve) => {
     const proc = spawn (command, [], { cwd, stdio: 'inherit' });

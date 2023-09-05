@@ -1,5 +1,6 @@
 import { plainToClassFromExist } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsString, validateSync } from 'class-validator';
+import { exec_command } from '../exec';
 
 export class Network {
   @IsString ()
@@ -12,14 +13,17 @@ export class Network {
   @IsString ()
   public subnet = '';
 
-  public to_command (): string {
-    let command = 'docker network create';
+  public async create (): Promise<void> {
+    const command = [
+      'network',
+      'create'
+    ];
     if (this.internal)
-      command += ' --internal';
+      command.push ('--internal');
     if (this.subnet.length > 0)
-      command += ` --subnet ${this.subnet}`;
-    command += ` ${this.name}`;
-    return command;
+      command.push ('--subnet', this.subnet);
+    command.push (this.name);
+    await exec_command ('docker', command);
   }
 
   public static from_json (data: Record<string, unknown>): Network {

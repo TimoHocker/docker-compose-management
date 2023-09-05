@@ -3,6 +3,7 @@ import {
   IsString, IsNotEmpty, IsArray,
   IsBoolean, validateSync
 } from 'class-validator';
+import { exec_command } from '../exec';
 
 export class Volume {
   @IsString ()
@@ -17,8 +18,12 @@ export class Volume {
   @IsNotEmpty ({ each: true })
   public backup_exclude: string[] = [];
 
-  public to_command (): string {
-    return `docker volume create ${this.name}`;
+  public async create (): Promise<void> {
+    await exec_command ('docker', [
+      'volume',
+      'create',
+      this.name
+    ]);
   }
 
   public static from_json (data: Record<string, unknown>): Volume {
