@@ -1,0 +1,14 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: setup
+    image: registry:5000/node-build
+    commands:
+      - yarn
+      - curl https://git.scode.ovh/Timo/standard/raw/branch/master/ci.js > ci.js
+
+  - name: build
+    image: registry:5000/node-build
+    commands:
+      - node ci.js
