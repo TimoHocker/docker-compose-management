@@ -29,6 +29,13 @@ export class Store {
       '--format',
       'json'
     ])).split ('\n')
+      .filter ((v) => {
+        try {
+          JSON.parse (v);
+          return true;
+        }
+        catch (e) { return false; }
+      })
       .map ((v) => JSON.parse (v).Name);
 
     for (const volume of this.volumes)
@@ -48,6 +55,13 @@ export class Store {
       '--format',
       'json'
     ])).split ('\n')
+      .filter ((v) => {
+        try {
+          JSON.parse (v);
+          return true;
+        }
+        catch (e) { return false; }
+      })
       .map ((v) => JSON.parse (v).Name);
 
     for (const network of this.networks)
