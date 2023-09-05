@@ -31,6 +31,7 @@ export class Store {
       this.networks.push (Network.from_json (network));
   }
 
+  // eslint-disable-next-line max-lines-per-function, max-statements
   private async read_services (): Promise<void> {
     const passive = await this.read_json ('./passive.json');
     assert (Array.isArray (passive), 'passive.json is not an array');
@@ -42,6 +43,7 @@ export class Store {
 
     const list = await fs.readdir ('./services');
     this.services = [];
+    const services: Service[] = [];
     for (const file of list) {
       if (file.startsWith ('.'))
         continue;
@@ -62,19 +64,42 @@ export class Store {
         else
           console.warn (`${file}: dependencies is not an array`);
       }
-      this.services.push (service);
+      services.push (service);
     }
 
-    for (const service of this.services) {
-      for (const dependency of service.depends_on) {
-        if (typeof dependency !== 'string') {
+    for (const service of services) {
+      service.depends_on = service.depends_on.filter ((d) => {
+        if (typeof d !== 'string') {
           console.warn (`${service.name}: dependency is not a string`);
-          continue;
+          return false;
         }
-        const found = this.services.find ((s) => s.name === dependency);
-        if (typeof found === 'undefined')
-          console.warn (`${service.name}: dependency ${dependency} not found`);
+        const found = services.find ((s) => s.name === d);
+        if (typeof found === 'undefined') {
+          console.warn (`${service.name}: dependency ${d} not found`);
+          return false;
+        }
+        return true;
+      });
+    }
+
+    const added: string[] = [];
+    let last = 0;
+    while (services.length > added.length) {
+      for (const service of services) {
+        if (service.depends_on.filter (
+          (v) => !added.includes (v)
+        ).length === 0) {
+          this.services.push (service);
+          added.push (service.name);
+        }
       }
+      if (last === added.length) {
+        console.warn (services.map (
+          (s) => `${s.name} depends on: ${s.depends_on.join (', ')}`
+        ));
+        throw new Error ('circular dependency detected');
+      }
+      last = added.length;
     }
   }
 

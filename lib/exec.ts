@@ -6,7 +6,7 @@ export function exec_command (
   cwd = '.'
 ): Promise<void> {
   return new Promise<void> ((resolve) => {
-    const proc = spawn (command, [], { cwd, stdio: 'inherit' });
+    const proc = spawn (command, args, { cwd, stdio: 'inherit' });
     proc.on ('close', (code) => {
       if (code !== 0) {
         throw new Error (
