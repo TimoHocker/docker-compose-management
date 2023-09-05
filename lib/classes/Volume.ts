@@ -1,4 +1,4 @@
-import { plainToClassFromExist } from 'class-transformer';
+import { Exclude, plainToClassFromExist } from 'class-transformer';
 import {
   IsString, IsNotEmpty, IsArray,
   IsBoolean, validateSync
@@ -18,7 +18,12 @@ export class Volume {
   @IsNotEmpty ({ each: true })
   public backup_exclude: string[] = [];
 
+  @Exclude ()
+  public exists = false;
+
   public async create (): Promise<void> {
+    if (this.exists)
+      return;
     await exec_command ('docker', [
       'volume',
       'create',

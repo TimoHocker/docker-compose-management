@@ -1,4 +1,4 @@
-import { plainToClassFromExist } from 'class-transformer';
+import { Exclude, plainToClassFromExist } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsString, validateSync } from 'class-validator';
 import { exec_command } from '../exec';
 
@@ -13,7 +13,12 @@ export class Network {
   @IsString ()
   public subnet = '';
 
+  @Exclude ()
+  public exists = false;
+
   public async create (): Promise<void> {
+    if (this.exists)
+      return;
     const command = [
       'network',
       'create'

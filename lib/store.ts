@@ -3,6 +3,7 @@ import assert from 'assert';
 import { Network } from './classes/Network';
 import { Service } from './classes/Service';
 import { Volume } from './classes/Volume';
+import { exec_command, run_command } from './exec';
 
 export class Store {
   services: Service[] = [];
@@ -21,6 +22,17 @@ export class Store {
     this.volumes = [];
     for (const volume of data)
       this.volumes.push (Volume.from_json (volume));
+
+    const existing = (await run_command ('docker', [
+      'volume',
+      'ls',
+      '--format',
+      'json'
+    ])).split ('\n')
+      .map ((v) => JSON.parse (v).Name);
+
+    for (const volume of this.volumes)
+      volume.exists = existing.includes (volume.name);
   }
 
   private async read_networks (): Promise<void> {
@@ -29,6 +41,17 @@ export class Store {
     this.networks = [];
     for (const network of data)
       this.networks.push (Network.from_json (network));
+
+    const existing = (await run_command ('docker', [
+      'network',
+      'ls',
+      '--format',
+      'json'
+    ])).split ('\n')
+      .map ((v) => JSON.parse (v).Name);
+
+    for (const network of this.networks)
+      network.exists = existing.includes (network.name);
   }
 
   // eslint-disable-next-line max-lines-per-function, max-statements
