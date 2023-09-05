@@ -123,9 +123,11 @@ export class Store {
     let last = 0;
     while (services.length > added.length) {
       for (const service of services) {
-        if (service.depends_on.filter (
-          (v) => !added.includes (v)
-        ).length === 0) {
+        if (
+          !added.includes (service.name)
+          && service.depends_on.filter (
+            (v) => !added.includes (v)
+          ).length === 0) {
           this.services.push (service);
           added.push (service.name);
         }
