@@ -26,17 +26,17 @@ async function main () {
 
   switch (type) {
     case 'up':
-      do_up (store, include_passive, pull);
+      await do_up (store, include_passive, pull);
       break;
     case 'down':
-      do_down (store);
+      await do_down (store);
       break;
     case 'pull':
-      do_pull (store);
+      await do_pull (store);
       break;
     case 'restart':
-      do_down (store);
-      do_up (store, include_passive, pull);
+      await do_down (store);
+      await do_up (store, include_passive, pull);
       break;
     default:
       throw new Error (`Unknown command type: ${type}`);
