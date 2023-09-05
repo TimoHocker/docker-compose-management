@@ -1,17 +1,15 @@
+'use strict';
+
 module.exports = {
   env: {
     commonjs: true,
-    es6: true,
-    node: true
+    es6:      true,
+    node:     true
   },
-  extends: [
-    '@sapphirecode'
-  ],
+  extends: [ '@sapphirecode' ],
   globals: {
-    Atomics: 'readonly',
+    Atomics:           'readonly',
     SharedArrayBuffer: 'readonly'
   },
-  parserOptions: {
-    ecmaVersion: 2018
-  }
-}
+  parserOptions: { ecmaVersion: 2018 }
+};

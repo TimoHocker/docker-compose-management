@@ -3,7 +3,7 @@ import assert from 'assert';
 import { Network } from './classes/Network';
 import { Service } from './classes/Service';
 import { Volume } from './classes/Volume';
-import { exec_command, run_command } from './exec';
+import { run_command } from './exec';
 
 export class Store {
   services: Service[] = [];

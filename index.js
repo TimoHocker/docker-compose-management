@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * Copyright (C) SapphireCode - All Rights Reserved
  * This file is part of Snippeteer which is released under BSD-3-Clause.
