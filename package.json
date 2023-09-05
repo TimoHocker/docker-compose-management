@@ -2,10 +2,24 @@
   "name": "dcm",
   "version": "1.0.0",
   "main": "index.js",
+  "description": "Managing docker compose configurations, volumes and networks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TimoHocker/docker-compose-management.git"
+  },
+  "bugs": "https://github.com/TimoHocker/docker-compose-management/issues",
   "bin": {
     "dcm": "./index.js"
   },
-  "author": "Timo Hocker <35867059+TimoHocker@users.noreply.github.com>",
+  "author": {
+    "name": "Timo Hocker",
+    "email": "35867059+TimoHocker@users.noreply.github.com"
+  },
+  "keywords": [
+    "docker",
+    "compose",
+    "dcm"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@sapphirecode/eslint-config-ts": "^1.2.2",
