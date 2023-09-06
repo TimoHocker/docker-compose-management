@@ -1,6 +1,6 @@
 # Docker-Compose Management
 
-Version: 1.0.0
+Version: 1.0.1
 
 Open docker-compose management cli
 ## Setup
@@ -27,6 +27,10 @@ the option `backup` to false. Additionally single folders can be excluded from
 the backup using the `backup_exclude` option.
 
 ## Commands
+
+Global Options:
+
+- `--delay=<seconds>`: Delay before executing the command
 
 1. Pulling images: `pull`
 

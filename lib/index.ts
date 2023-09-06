@@ -26,6 +26,20 @@ async function main () {
   if (argv.includes ('--pull'))
     pull = true;
 
+  let delay = 0;
+  for (const arg of argv) {
+    if (arg.startsWith ('--delay=')) {
+      delay = parseInt (arg.slice ('--delay='.length));
+      if (isNaN (delay))
+        throw new Error (`Invalid delay: ${arg}`);
+    }
+  }
+
+  if (delay > 0) {
+    console.log (`Delaying for ${delay} seconds...`);
+    await new Promise ((resolve) => setTimeout (resolve, delay * 1000));
+  }
+
   switch (type) {
     case 'up':
       await do_up (store, include_passive, pull);

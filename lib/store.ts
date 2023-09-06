@@ -68,7 +68,6 @@ export class Store {
       network.exists = existing.includes (network.name);
   }
 
-  // eslint-disable-next-line max-lines-per-function, max-statements
   private async read_services (): Promise<void> {
     const passive = await this.read_json ('./passive.json');
     assert (Array.isArray (passive), 'passive.json is not an array');
