@@ -3,9 +3,6 @@ import { do_create_filter, do_down, do_pull, do_up } from './commands';
 import { Store } from './store';
 
 async function main () {
-  const store = (new Store);
-  await store.read_config ();
-
   const argv = process.argv.slice (2);
 
   let type: CommandType = 'up';
@@ -39,6 +36,9 @@ async function main () {
     console.log (`Delaying for ${delay} seconds...`);
     await new Promise ((resolve) => setTimeout (resolve, delay * 1000));
   }
+
+  const store = (new Store);
+  await store.read_config ();
 
   switch (type) {
     case 'up':
