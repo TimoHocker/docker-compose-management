@@ -1,3 +1,4 @@
+import { Stream } from 'stream';
 import { CommandType } from './command_definition';
 import { do_create_filter, do_down, do_pull, do_up } from './commands';
 import { Store } from './store';
@@ -39,6 +40,11 @@ async function main () {
 
   const store = (new Store);
   await store.read_config ();
+
+  store.docker.pull('httpd',(err:string, stream:Stream)=>{
+    stream.pipe(process.stdout);
+  });
+  return;
 
   switch (type) {
     case 'up':
