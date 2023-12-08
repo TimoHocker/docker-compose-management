@@ -4,6 +4,8 @@ export class Service {
   public name: string;
   public depends_on: string[] = [];
   public passive;
+  public buildable = false;
+  public images: string[] = [];
 
   public constructor (name: string, passive: boolean) {
     this.name = name;
@@ -14,15 +16,8 @@ export class Service {
     return `services/${this.name}`;
   }
 
-  public async pull (): Promise<void> {
-    await exec_command ('docker', [
-      'compose',
-      'pull'
-    ], this.directory);
-    await exec_command ('docker', [
-      'compose',
-      'build'
-    ], this.directory);
+  public get compose_file (): string {
+    return `${this.directory}/docker-compose.yml`;
   }
 
   public async up (): Promise<void> {

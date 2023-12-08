@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import assert from 'assert';
+import YAML from 'yaml';
 import { Network } from './classes/Network';
 import { Service } from './classes/Service';
 import { Volume } from './classes/Volume';
@@ -83,23 +84,42 @@ export class Store {
     for (const file of list) {
       if (file.startsWith ('.'))
         continue;
-      const stat = await fs.stat (`./services/${file}`);
+
+      const service = new Service (file, passive.includes (file));
+
+      const stat = await fs.stat (service.directory);
       if (!stat.isDirectory ())
         continue;
+
       try {
-        await fs.access (`./services/${file}/docker-compose.yml`);
+        await fs.access (service.compose_file);
       }
       catch (err) {
         console.warn (`${file}: error reading docker-compose.yml: ${err}`);
         continue;
       }
-      const service = new Service (file, passive.includes (file));
       if (typeof dependencies[file] !== 'undefined') {
         if (Array.isArray (dependencies[file]))
           service.depends_on = dependencies[file] as string[];
         else
           console.warn (`${file}: dependencies is not an array`);
       }
+      const contents = YAML.parse (
+        await fs.readFile (service.compose_file, 'utf-8')
+      );
+
+      assert (
+        typeof contents.services === 'object',
+        `no service configuration in ${service.compose_file}`
+      );
+
+      const images = Object.keys (contents.services)
+        .map ((key) => contents.services[key].image)
+        .filter ((v, i, a) => a.indexOf (v === i));
+
+      service.images = images.filter ((v) => typeof v === 'string');
+      service.buildable = images.length > service.images.length;
+
       services.push (service);
     }
 

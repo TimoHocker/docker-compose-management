@@ -1,6 +1,8 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { Store } from './store';
+import { exec_command } from './exec';
+import { Service } from './classes/Service';
 
 async function init_structure (store: Store): Promise<void> {
   for (const volume of store.volumes)
@@ -15,11 +17,11 @@ export async function do_up (
   pull: boolean
 ): Promise<void> {
   await init_structure (store);
+  if (pull)
+    await do_pull (store);
   for (const service of store.services) {
     if (service.passive && !include_passive)
       continue;
-    if (pull)
-      await service.pull ();
     await service.up ();
   }
 }
@@ -30,8 +32,24 @@ export async function do_down (store: Store): Promise<void> {
 }
 
 export async function do_pull (store: Store): Promise<void> {
-  for (const service of store.services)
-    await service.pull ();
+  const images: string[] = [];
+  const buildable: Service[] = [];
+  for (const service of store.services) {
+    images.push (...service.images);
+    if (service.buildable)
+      buildable.push (service);
+  }
+
+  await Promise.all ([
+    ...buildable.map ((v) => exec_command ('docker', [
+      'compose',
+      'build'
+    ], v.directory)),
+    ...images.map ((v) => exec_command ('docker', [
+      'pull',
+      v
+    ]))
+  ]);
 }
 
 export async function do_create_filter (store: Store): Promise<void> {
