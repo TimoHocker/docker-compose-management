@@ -1,6 +1,6 @@
 {
   "name": "@sapphirecode/dcm",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index.js",
   "description": "Managing docker compose configurations, volumes and networks",
   "repository": {
@@ -40,7 +40,7 @@
     "/lib/"
   ],
   "dependencies": {
-    "@sapphirecode/tasks": "^1.0.0",
+    "@sapphirecode/tasks": "^1.0.3",
     "chalk": "4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",

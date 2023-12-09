@@ -150,10 +150,10 @@
     eslint-plugin-node "^11.1.0"
     eslint-plugin-sort-requires-by-path "^1.0.2"
 
-"@sapphirecode/tasks@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@sapphirecode/tasks/-/tasks-1.0.0.tgz#7f13cca07b8031e70c4b24652f3a842dbd0c53e0"
-  integrity sha512-FBh1qgpa5UqD8jt/i7rBXFS8wylHsnmcKLyq2ahDfFY43xR3MRH2WhhIjAXVABTJgmQF7VWQjVFk4XBDt4ikgA==
+"@sapphirecode/tasks@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@sapphirecode/tasks/-/tasks-1.0.3.tgz#1970c1f9fc592c1d8e8350719d46765986e7ccc4"
+  integrity sha512-ej9TVJNVVQei1tGbGKncCFNiauC03DydogUoZwLNCzmr9x2drEJMZhAP7uptufu4SsPzS8bxeyaAueaApWzu+A==
   dependencies:
     chalk "4"
 

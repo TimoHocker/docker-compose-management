@@ -1,0 +1,7 @@
+services:
+  grafana:
+    image: rabbitmq
+    hostname: rabbitmq
+    container_name: rabbitmq
+    restart: always
+
