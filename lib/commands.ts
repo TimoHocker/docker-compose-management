@@ -1,8 +1,14 @@
 import path from 'path';
 import fs from 'fs/promises';
+import {
+  Task,
+  TaskListHorizontal,
+  TaskListVertical
+} from '@sapphirecode/tasks';
 import { Store } from './store';
 import { exec_command } from './exec';
 import { Service } from './classes/Service';
+import { pull_image } from './docker_interface';
 
 async function init_structure (store: Store): Promise<void> {
   for (const volume of store.volumes)
@@ -32,24 +38,48 @@ export async function do_down (store: Store): Promise<void> {
 }
 
 export async function do_pull (store: Store): Promise<void> {
-  const images: string[] = [];
+  const all_images: string[] = [];
   const buildable: Service[] = [];
   for (const service of store.services) {
-    images.push (...service.images);
+    all_images.push (...service.images);
     if (service.buildable)
       buildable.push (service);
   }
 
-  await Promise.all ([
-    ...buildable.map ((v) => exec_command ('docker', [
+  const images = all_images.filter ((v, i, a) => a.indexOf (v) === i);
+
+  const tasks = [];
+  const task_list = new TaskListVertical;
+
+  for (const buildable_service of buildable) {
+    const tl = new TaskListHorizontal;
+    task_list.tasks.push (tl);
+    tl.label = `Building ${buildable_service.name}`;
+    tl.label_length = 20;
+    tl.display_percentage = false;
+    const task = new Task;
+    tl.tasks.push (task);
+    task.progress = 0.5;
+    tasks.push (exec_command ('docker', [
       'compose',
       'build'
-    ], v.directory)),
-    ...images.map ((v) => exec_command ('docker', [
-      'pull',
-      v
-    ]))
-  ]);
+    ], buildable_service.directory)
+      .then (() => {
+        task.progress = 1;
+        task.completed = true;
+      }));
+  }
+
+  for (const pullable of images) {
+    const tl = new TaskListHorizontal;
+    task_list.tasks.push (tl);
+    tl.label_length = 20;
+    tasks.push (pull_image (pullable, tl));
+  }
+
+  task_list.update ();
+
+  await Promise.all (tasks);
 }
 
 export async function do_create_filter (store: Store): Promise<void> {

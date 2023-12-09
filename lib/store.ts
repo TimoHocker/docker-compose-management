@@ -5,13 +5,11 @@ import { Network } from './classes/Network';
 import { Service } from './classes/Service';
 import { Volume } from './classes/Volume';
 import { run_command } from './exec';
-import Docker from 'dockerode';
 
 export class Store {
   services: Service[] = [];
   networks: Network[] = [];
   volumes: Volume[] = [];
-  docker = new Docker;
 
   private async read_json (filename: string): Promise<Record<string, unknown>> {
     const file = await fs.readFile (filename, 'utf-8');
