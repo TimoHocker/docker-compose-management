@@ -1,9 +1,11 @@
 # Docker-Compose Management
 
-Version: 1.0.1
+Version: 1.0.3
 
 Open docker-compose management cli
 ## Setup
+
+Installation: `npm i -g @sapphirecode/dcm`
 
 Each service has its own folder under `services/` all necessary docker-compose
 files and configs should be stored there.
