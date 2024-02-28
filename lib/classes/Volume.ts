@@ -18,6 +18,11 @@ export class Volume {
   @IsNotEmpty ({ each: true })
   public backup_exclude: string[] = [];
 
+  @IsArray ()
+  @IsString ({ each: true })
+  @IsNotEmpty ({ each: true })
+  public backup_include: string[] = [];
+
   @Exclude ()
   public exists = false;
 

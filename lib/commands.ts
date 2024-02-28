@@ -86,8 +86,18 @@ export async function do_create_filter (store: Store): Promise<void> {
   const filter_lines = [];
   const backup_volumes = store.volumes.filter ((volume) => volume.backup)
     .sort ((a, b) => a.name.localeCompare (b.name));
-  for (const volume of backup_volumes)
-    filter_lines.push (`+ /${volume.name}/`);
+  for (const volume of backup_volumes) {
+    if (volume.backup_include.length > 0) {
+      for (const include of volume.backup_include) {
+        const link = path.normalize (`/${volume.name}/_data/${include}`)
+          .replace (/\\/gu, '/');
+        filter_lines.push (`+ ${link}`);
+      }
+    }
+    else {
+      filter_lines.push (`+ /${volume.name}/`);
+    }
+  }
   filter_lines.push ('- /*');
 
   for (const volume of backup_volumes) {
