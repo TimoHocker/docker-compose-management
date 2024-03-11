@@ -13,6 +13,9 @@ export class Network {
   @IsString ()
   public subnet = '';
 
+  @IsString ()
+  public interface_name = '';
+
   @Exclude ()
   public exists = false;
 
@@ -27,6 +30,8 @@ export class Network {
       command.push ('--internal');
     if (this.subnet.length > 0)
       command.push ('--subnet', this.subnet);
+    if (this.interface_name.length > 0)
+      command.push ('--opt', `com.docker.network.bridge.name=${this.interface_name}`);
     command.push (this.name);
     await exec_command ('docker', command);
   }

@@ -1,6 +1,6 @@
 # Docker-Compose Management
 
-Version: 1.1.0
+Version: 1.1.1
 
 Open docker-compose management cli
 
@@ -24,7 +24,8 @@ started automatically, but they can be started manually by running
 
 Networks can be defined in `networks.json`. Available options are `internal` to
 set docker's network internal flag and `subnet` to define a specific subnet for
-a network.
+a network. With `interface_name` you can specify the interface name for the
+network.
 
 Volume settings are placed in `volumes.json`. By default all volumes in this
 file are added to the backup filter. To prevent them from getting backed up, set
