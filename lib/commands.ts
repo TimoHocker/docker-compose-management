@@ -10,6 +10,7 @@ import { exec_command } from './exec';
 import { Service } from './classes/Service';
 import { pull_image } from './docker_interface';
 import { delay } from './util';
+import assert from 'assert';
 
 async function init_structure(store: Store): Promise<void> {
   for (const volume of store.volumes)
@@ -52,12 +53,13 @@ export async function do_up(
 
   const threads = [];
   for (let i = 0; i < 4; i++) {
-    threads.push(new Promise(async (res) => {
+    threads.push(new Promise<void>(async (res) => {
       while (queue.length > 0) {
         const service = queue.shift();
+        assert(typeof service !== 'undefined');
         let waiting_for = 0;
         do {
-          waiting_for = service?.depends_on.filter(dep => {
+          waiting_for = service.depends_on.filter(dep => {
             started.indexOf(dep) < 0;
           }).length;
           await delay(100);
