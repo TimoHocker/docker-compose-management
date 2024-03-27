@@ -24,15 +24,20 @@
   "devDependencies": {
     "@sapphirecode/eslint-config-ts": "^1.2.2",
     "@types/dockerode": "^3.3.23",
+    "@types/jasmine": "^5.1.4",
     "@types/node": "^20.5.7",
     "eslint": "^8.48.0",
+    "jasmine": "^5.1.0",
+    "nyc": "^15.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.vue,.mjs",
-    "test": "echo \"no test\"",
-    "compile": "tsc"
+    "test": "nyc jasmine --config=\"jasmine.json\"",
+    "pretest": "yarn compile",
+    "compile": "tsc",
+    "precompile": "rm -rf dist"
   },
   "files": [
     "LICENSE",
