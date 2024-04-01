@@ -13,6 +13,7 @@ import { delay } from './util';
 import assert from 'assert';
 
 async function init_structure(store: Store): Promise<void> {
+  await store.read_docker_status();
   for (const volume of store.volumes)
     await volume.create();
   for (const network of store.networks)

@@ -17,13 +17,7 @@ export class Store {
     return json;
   }
 
-  private async read_volumes (): Promise<void> {
-    const data = await this.read_json ('./volumes.json');
-    assert (Array.isArray (data), 'volumes.json is not an array');
-    this.volumes = [];
-    for (const volume of data)
-      this.volumes.push (Volume.from_json (volume));
-
+  private async read_volume_status(): Promise<void> {
     const existing = (await run_command ('docker', [
       'volume',
       'ls',
@@ -43,13 +37,15 @@ export class Store {
       volume.exists = existing.includes (volume.name);
   }
 
-  private async read_networks (): Promise<void> {
-    const data = await this.read_json ('./networks.json');
-    assert (Array.isArray (data), 'networks.json is not an array');
-    this.networks = [];
-    for (const network of data)
-      this.networks.push (Network.from_json (network));
+  private async read_volumes (): Promise<void> {
+    const data = await this.read_json ('./volumes.json');
+    assert (Array.isArray (data), 'volumes.json is not an array');
+    this.volumes = [];
+    for (const volume of data)
+      this.volumes.push (Volume.from_json (volume));
+  }
 
+  private async read_network_status(): Promise<void> {
     const existing = (await run_command ('docker', [
       'network',
       'ls',
@@ -67,6 +63,14 @@ export class Store {
 
     for (const network of this.networks)
       network.exists = existing.includes (network.name);
+  }
+
+  private async read_networks (): Promise<void> {
+    const data = await this.read_json ('./networks.json');
+    assert (Array.isArray (data), 'networks.json is not an array');
+    this.networks = [];
+    for (const network of data)
+      this.networks.push (Network.from_json (network));
   }
 
   private async read_services (): Promise<void> {
@@ -165,5 +169,10 @@ export class Store {
     await this.read_networks ();
     await this.read_volumes ();
     await this.read_services ();
+  }
+
+  public async read_docker_status() {
+    await this.read_network_status();
+    await this.read_volume_status();
   }
 }
