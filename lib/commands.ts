@@ -6,11 +6,14 @@ import {
   TaskListHorizontal,
   TaskListVertical
 } from '@sapphirecode/tasks';
+import debug from 'debug';
 import { Store } from './store';
 import { exec_command } from './exec';
 import { Service } from './classes/Service';
 import { pull_image } from './docker_interface';
 import { delay } from './util';
+
+const log = debug ('sapphirecode:docker-compose-backup:commands');
 
 async function init_structure (store: Store): Promise<void> {
   await store.read_docker_status ();
@@ -18,6 +21,13 @@ async function init_structure (store: Store): Promise<void> {
     await volume.create ();
   for (const network of store.networks)
     await network.create ();
+}
+
+function check_startable (dependencies: string[], started: string[]): boolean {
+  const sublog = log.extend ('check_startable');
+  const missing = dependencies.filter ((dep) => !started.includes (dep));
+  sublog ('Startable:', missing.length === 0, 'missing:', missing);
+  return missing.length === 0;
 }
 
 export async function do_up (
@@ -50,6 +60,8 @@ export async function do_up (
     queue.push (...services.splice (index, 1));
   }
 
+  log ('Queue:', queue.map ((s) => s.name));
+
   const threads = [];
   for (let i = 0; i < 4; i++) {
     // eslint-disable-next-line no-async-promise-executor
@@ -58,13 +70,11 @@ export async function do_up (
         while (queue.length > 0) {
           const service = queue.shift ();
           assert (typeof service !== 'undefined');
-          let waiting_for = 0;
-          do {
-            waiting_for = service.depends_on.filter (
-              (dep) => started.indexOf (dep) < 0
-            ).length;
+          log (`Checking ${service.name}`);
+          while (!check_startable (service.depends_on, started))
             await delay (100);
-          } while (waiting_for > 0);
+
+          log (`Starting ${service.name}`);
           await service?.up ();
         }
         res ();
@@ -75,6 +85,7 @@ export async function do_up (
     }));
   }
   await Promise.all (threads);
+  log ('All services started');
 }
 
 export async function do_down (store: Store): Promise<void> {

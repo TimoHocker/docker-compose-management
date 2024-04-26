@@ -1,6 +1,6 @@
 {
   "name": "@sapphirecode/dcm",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "index.js",
   "description": "Managing docker compose configurations, volumes and networks",
   "repository": {
@@ -23,6 +23,7 @@
   "license": "MIT",
   "devDependencies": {
     "@sapphirecode/eslint-config-ts": "^1.2.2",
+    "@types/debug": "^4.1.12",
     "@types/dockerode": "^3.3.23",
     "@types/jasmine": "^5.1.4",
     "@types/node": "^20.5.7",
@@ -49,6 +50,7 @@
     "chalk": "4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "debug": "^4.3.4",
     "dockerode": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "yaml": "^2.3.4"
