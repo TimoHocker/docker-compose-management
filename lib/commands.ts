@@ -76,6 +76,7 @@ export async function do_up (
 
           log (`Starting ${service.name}`);
           await service?.up ();
+          started.push (service.name);
         }
         res ();
       }
