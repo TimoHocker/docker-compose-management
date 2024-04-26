@@ -53,20 +53,25 @@ export async function do_up (
   const threads = [];
   for (let i = 0; i < 4; i++) {
     // eslint-disable-next-line no-async-promise-executor
-    threads.push (new Promise<void> (async (res) => {
-      while (queue.length > 0) {
-        const service = queue.shift ();
-        assert (typeof service !== 'undefined');
-        let waiting_for = 0;
-        do {
-          waiting_for = service.depends_on.filter (
-            (dep) => started.indexOf (dep) < 0
-          ).length;
-          await delay (100);
-        } while (waiting_for > 0);
-        await service?.up ();
+    threads.push (new Promise<void> (async (res, reject) => {
+      try {
+        while (queue.length > 0) {
+          const service = queue.shift ();
+          assert (typeof service !== 'undefined');
+          let waiting_for = 0;
+          do {
+            waiting_for = service.depends_on.filter (
+              (dep) => started.indexOf (dep) < 0
+            ).length;
+            await delay (100);
+          } while (waiting_for > 0);
+          await service?.up ();
+        }
+        res ();
       }
-      res ();
+      catch (e) {
+        reject (e);
+      }
     }));
   }
   await Promise.all (threads);
