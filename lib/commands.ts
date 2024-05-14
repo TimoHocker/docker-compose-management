@@ -46,9 +46,10 @@ export async function do_up (
   while (services.length > 0) {
     index %= services.length;
     const service = services[index];
-    if (service.passive && !include_passive)
+    if (service.passive && !include_passive) {
       services.splice (index, 1);
-
+      continue;
+    }
 
     const waiting_for = service.depends_on.filter ((dep) => {
       const active = queue.filter ((s) => s.name === dep).length;
