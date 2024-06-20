@@ -13,7 +13,7 @@ import { Service } from './classes/Service';
 import { pull_image } from './docker_interface';
 import { delay } from './util';
 
-const log = debug ('sapphirecode:docker-compose-backup:commands');
+const log = debug ('sapphirecode:dcm:commands');
 
 async function init_structure (store: Store): Promise<void> {
   await store.read_docker_status ();

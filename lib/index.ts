@@ -1,6 +1,9 @@
 import { CommandType } from './command_definition';
 import { do_create_filter, do_down, do_pull, do_up } from './commands';
 import { Store } from './store';
+import {debug} from 'debug';
+
+const log = debug ('sapphirecode:dcm:main');
 
 async function main () {
   const argv = process.argv.slice (2);
@@ -15,13 +18,19 @@ async function main () {
   else if (argv.includes ('create_filter'))
     type = 'create_filter';
 
+  log('type:', type)
+
   let include_passive = false;
   if (argv.includes ('--include-passive'))
     include_passive = true;
 
+  log('include_passive:', include_passive)
+
   let pull = false;
   if (argv.includes ('--pull'))
     pull = true;
+
+  log('pull:', pull)
 
   let delay = 0;
   for (const arg of argv) {
@@ -32,10 +41,14 @@ async function main () {
     }
   }
 
+  log('delay:', delay)
+
   if (delay > 0) {
     console.log (`Delaying for ${delay} seconds...`);
     await new Promise ((resolve) => setTimeout (resolve, delay * 1000));
   }
+
+  log('starting...')
 
   const store = (new Store);
   await store.read_config ();
