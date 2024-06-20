@@ -1,4 +1,4 @@
-/* eslint-disable require-unicode-regexp */
+/* eslint-disable require-unicode-regexp, max-depth */
 
 import path from 'path';
 import fs from 'fs/promises';
@@ -62,6 +62,21 @@ export async function do_up (
     });
     if (waiting_for.length > 0) {
       log (`Service ${service.name} waiting for ${waiting_for.join (', ')}`);
+      for (const waiting_for_service of waiting_for) {
+        const is_available = false;
+        for (const available of services) {
+          if (available.name === waiting_for_service) {
+            is_available = true;
+            break;
+          }
+        }
+        assert (
+          is_available,
+          `Service ${waiting_for_service
+          } does not exist. Cannot start ${service.name}`
+        );
+      }
+      index++;
       continue;
     }
 
