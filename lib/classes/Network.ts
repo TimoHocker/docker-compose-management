@@ -1,6 +1,9 @@
 import { Exclude, plainToClassFromExist } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsString, validateSync } from 'class-validator';
 import { exec_command } from '../exec';
+import {debug} from 'debug'
+
+const log = debug ('sapphirecode:dcm:Network');
 
 export class Network {
   @IsString ()
@@ -20,8 +23,11 @@ export class Network {
   public exists = false;
 
   public async create (): Promise<void> {
-    if (this.exists)
+    if (this.exists) {
+      log (`Network ${this.name} already exists`);
       return;
+    }
+    log (`Creating network ${this.name}`);
     const command = [
       'network',
       'create'

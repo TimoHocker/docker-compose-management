@@ -4,6 +4,9 @@ import {
   IsBoolean, validateSync
 } from 'class-validator';
 import { exec_command } from '../exec';
+import {debug} from 'debug';
+
+const log = debug ('sapphirecode:dcm:Volume');
 
 export class Volume {
   @IsString ()
@@ -27,8 +30,11 @@ export class Volume {
   public exists = false;
 
   public async create (): Promise<void> {
-    if (this.exists)
+    if (this.exists) {
+      log (`Volume ${this.name} already exists`);
       return;
+    }
+    log (`Creating volume ${this.name}`);
     await exec_command ('docker', [
       'volume',
       'create',
