@@ -1,3 +1,5 @@
+/* eslint-disable require-unicode-regexp */
+
 import path from 'path';
 import fs from 'fs/promises';
 import assert from 'assert';
@@ -148,7 +150,7 @@ export async function do_create_filter (store: Store): Promise<void> {
     if (volume.backup_include.length > 0) {
       for (const include of volume.backup_include) {
         const link = path.normalize (`/${volume.name}/_data/${include}`)
-          .replace (/\\/gu, '/');
+          .replace (/\\/g, '/');
         filter_lines.push (`+ ${link}`);
       }
     }
@@ -161,7 +163,7 @@ export async function do_create_filter (store: Store): Promise<void> {
   for (const volume of backup_volumes) {
     for (const exclude of volume.backup_exclude) {
       const link = path.normalize (`/${volume.name}/_data/${exclude}`)
-        .replace (/\\/gu, '/');
+        .replace (/\\/g, '/');
       filter_lines.push (`- ${link}`);
     }
   }
