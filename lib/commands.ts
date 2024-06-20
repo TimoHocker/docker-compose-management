@@ -63,7 +63,7 @@ export async function do_up (
     if (waiting_for.length > 0) {
       log (`Service ${service.name} waiting for ${waiting_for.join (', ')}`);
       for (const waiting_for_service of waiting_for) {
-        const is_available = false;
+        let is_available = false;
         for (const available of services) {
           if (available.name === waiting_for_service) {
             is_available = true;
