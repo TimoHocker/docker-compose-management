@@ -18,6 +18,7 @@ import { delay } from './util';
 const log = debug ('sapphirecode:dcm:commands');
 
 async function init_structure (store: Store): Promise<void> {
+  log ('Initializing structure');
   await store.read_docker_status ();
   for (const volume of store.volumes)
     await volume.create ();
@@ -37,6 +38,7 @@ export async function do_up (
   include_passive: boolean,
   pull: boolean
 ): Promise<void> {
+  log ('Starting up');
   await init_structure (store);
   if (pull)
     await do_pull (store);
@@ -49,6 +51,7 @@ export async function do_up (
     index %= services.length;
     const service = services[index];
     if (service.passive && !include_passive) {
+      log (`Skipping passive service ${service.name}`);
       services.splice (index, 1);
       continue;
     }
@@ -57,8 +60,12 @@ export async function do_up (
       const active = queue.filter ((s) => s.name === dep).length;
       return active === 0;
     });
-    if (waiting_for.length > 0)
+    if (waiting_for.length > 0) {
+      log (`Service ${service.name} waiting for ${waiting_for.join (', ')}`);
       continue;
+    }
+
+    log (`Queueing ${service.name}`);
 
     queue.push (...services.splice (index, 1));
   }
@@ -98,6 +105,7 @@ export async function do_down (store: Store): Promise<void> {
 }
 
 export async function do_pull (store: Store): Promise<void> {
+  log ('Pulling images');
   const all_images: string[] = [];
   const buildable: Service[] = [];
   for (const service of store.services) {
