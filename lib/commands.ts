@@ -47,7 +47,17 @@ export async function do_up (
   const queue: Service[] = [];
   const started: string[] = [];
   let index = 0;
+  let passes = 0;
   while (services.length > 0) {
+    if (index >= services.length) {
+      passes++;
+      assert (
+        passes < 128,
+        `Maximum depth reached. Circular dependency detected\n${
+          services.map ((s) => `[${s.name}] ${s.depends_on.join (', ')}`)
+            .join ('\n')}`
+      );
+    }
     index %= services.length;
     const service = services[index];
     if (service.passive && !include_passive) {
