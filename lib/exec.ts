@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import {debug} from 'debug'
+import { debug } from 'debug';
 
 const log = debug ('sapphirecode:dcm:exec');
 
@@ -46,6 +46,6 @@ export function run_command (
   args: string[],
   cwd = '.'
 ): Promise<string> {
-  log(`run_command: ${command} ${args.join (' ')}`);
+  log (`run_command: ${command} ${args.join (' ')}`);
   return spawn_command (command, args, cwd, 'pipe');
 }

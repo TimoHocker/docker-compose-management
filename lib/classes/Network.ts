@@ -1,7 +1,7 @@
 import { Exclude, plainToClassFromExist } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsString, validateSync } from 'class-validator';
+import { debug } from 'debug';
 import { exec_command } from '../exec';
-import {debug} from 'debug'
 
 const log = debug ('sapphirecode:dcm:Network');
 

@@ -3,8 +3,8 @@ import {
   IsString, IsNotEmpty, IsArray,
   IsBoolean, validateSync
 } from 'class-validator';
+import { debug } from 'debug';
 import { exec_command } from '../exec';
-import {debug} from 'debug';
 
 const log = debug ('sapphirecode:dcm:Volume');
 
