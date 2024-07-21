@@ -212,8 +212,8 @@ export async function do_pull (store: Store): Promise<void> {
     task.label.value = `Building ${buildable_service.name}`;
     task.label.length = 20;
     task.progress_by_time = true;
-    task.start_timer ();
     task.task_id = `build_${buildable_service.name}`;
+    task.start_timer ();
     tasks.push (exec_command (
       'docker',
       [
