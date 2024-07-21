@@ -1,4 +1,4 @@
-import { exec_command } from '../exec';
+import { exec_command, GetLogger } from '../exec';
 
 export class Service {
   public name: string;
@@ -20,18 +20,18 @@ export class Service {
     return `${this.directory}/docker-compose.yml`;
   }
 
-  public async up (): Promise<void> {
+  public async up (get_logger: GetLogger): Promise<void> {
     await exec_command ('docker', [
       'compose',
       'up',
       '-d'
-    ], this.directory);
+    ], get_logger (this.name), this.directory);
   }
 
-  public async down (): Promise<void> {
+  public async down (get_logger: GetLogger): Promise<void> {
     await exec_command ('docker', [
       'compose',
       'down'
-    ], this.directory);
+    ], get_logger (this.name), this.directory);
   }
 }

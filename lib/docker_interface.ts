@@ -21,7 +21,7 @@ export function pull_image (
   image: string,
   task_list: TaskListHorizontal
 ): Promise<void> {
-  task_list.label = `Pulling ${image}`;
+  task_list.label.value = `Pulling ${image}`;
   const tasks: Record<string, Task> = {};
 
   return new Promise<void> ((resolve) => {

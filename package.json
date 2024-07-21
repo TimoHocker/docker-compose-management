@@ -1,6 +1,6 @@
 {
   "name": "@sapphirecode/dcm",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "main": "index.js",
   "description": "Managing docker compose configurations, volumes and networks",
   "repository": {
@@ -29,7 +29,7 @@
     "@types/node": "^20.5.7",
     "eslint": "^8.48.0",
     "jasmine": "^5.1.0",
-    "nyc": "^15.1.0",
+    "nyc": "^17.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
@@ -46,13 +46,13 @@
     "/lib/"
   ],
   "dependencies": {
-    "@sapphirecode/tasks": "^1.0.3",
+    "@sapphirecode/tasks": "^2.0.3",
     "chalk": "4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "debug": "^4.3.4",
     "dockerode": "^4.0.0",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.2.2",
     "yaml": "^2.3.4"
   }
 }

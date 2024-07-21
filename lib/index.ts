@@ -1,4 +1,7 @@
+import { join } from 'path';
+import { tmpdir } from 'os';
 import { debug } from 'debug';
+import { time_store } from '@sapphirecode/tasks';
 import { CommandType } from './command_definition';
 import { do_create_filter, do_down, do_pull, do_up } from './commands';
 import { Store } from './store';
@@ -7,6 +10,11 @@ const log = debug ('sapphirecode:dcm:main');
 
 async function main () {
   const argv = process.argv.slice (2);
+
+  await time_store.use_file (join (
+    tmpdir (),
+    'sapphirecode-dcm-time-store.json'
+  ));
 
   let type: CommandType = 'up';
   if (argv.includes ('down'))

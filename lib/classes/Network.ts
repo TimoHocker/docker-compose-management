@@ -43,7 +43,7 @@ export class Network {
       );
     }
     command.push (this.name);
-    await exec_command ('docker', command);
+    await exec_command ('docker', command, console.log);
   }
 
   public static from_json (data: Record<string, unknown>): Network {

@@ -39,7 +39,7 @@ export class Volume {
       'volume',
       'create',
       this.name
-    ]);
+    ], console.log);
   }
 
   public static from_json (data: Record<string, unknown>): Volume {

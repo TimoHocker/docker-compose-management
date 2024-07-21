@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import assert from 'assert';
 import {
-  Task,
+  TaskHorizontal,
   TaskListHorizontal,
   TaskListVertical
 } from '@sapphirecode/tasks';
@@ -33,19 +33,21 @@ function check_startable (dependencies: string[], started: string[]): boolean {
   return missing.length === 0;
 }
 
-export async function do_up (
-  store: Store,
-  include_passive: boolean,
-  pull: boolean
-): Promise<void> {
-  log ('Starting up');
-  await init_structure (store);
-  if (pull)
-    await do_pull (store);
+function check_stoppable (
+  service: string,
+  services: Service[],
+  stopped: string[]
+): boolean {
+  const sublog = log.extend ('check_stoppable');
+  const depending = services.filter ((s) => s.depends_on.includes (service));
+  const missing = depending.filter ((dep) => !stopped.includes (dep.name));
+  sublog ('Stoppable:', missing.length === 0, 'missing:', missing);
+  return missing.length === 0;
+}
 
+function build_queue (store: Store, include_passive: boolean) {
   const services = [ ...store.services ];
   const queue: Service[] = [];
-  const started: string[] = [];
   let index = 0;
   let passes = 0;
   while (services.length > 0) {
@@ -94,8 +96,26 @@ export async function do_up (
 
     queue.push (...services.splice (index, 1));
   }
+  return queue;
+}
+
+export async function do_up (
+  store: Store,
+  include_passive: boolean,
+  pull: boolean
+): Promise<void> {
+  log ('Starting up');
+  await init_structure (store);
+  if (pull)
+    await do_pull (store);
+
+  const started: string[] = [];
+  const queue = build_queue (store, include_passive);
 
   log ('Queue:', queue.map ((s) => s.name));
+
+  const task_list = new TaskListVertical;
+  task_list.clear_completed = true;
 
   const threads = [];
   for (let i = 0; i < 4; i++) {
@@ -106,11 +126,24 @@ export async function do_up (
           const service = queue.shift ();
           assert (typeof service !== 'undefined');
           log (`Checking ${service.name}`);
+          const task = new TaskHorizontal;
+          task.task_id = `up_${service.name}`;
+          task.progress_by_time = true;
+          task.label.value = service.name;
+          task.label.length = 20;
+          task.state = 'paused';
+          task_list.tasks.push (task);
           while (!check_startable (service.depends_on, started))
             await delay (100);
 
           log (`Starting ${service.name}`);
-          await service?.up ();
+          task.state = 'running';
+          task.start_timer ();
+          await service.up (
+            (label) => (message) => task_list.log ({ label, message })
+          );
+          await task.stop_timer (true);
+          task.completed = true;
           started.push (service.name);
         }
         res ();
@@ -120,13 +153,42 @@ export async function do_up (
       }
     }));
   }
+  task_list.update ();
   await Promise.all (threads);
+  await task_list.await_end ();
   log ('All services started');
 }
 
 export async function do_down (store: Store): Promise<void> {
-  for (const service of [ ...store.services ].reverse ())
-    await service.down ();
+  const threads = [];
+  const stopped: string[] = [];
+  const services = [ ...store.services ];
+  const task_list = new TaskListVertical;
+  for (const service of services) {
+    threads.push ((async () => {
+      const task = new TaskHorizontal;
+      task.task_id = `down_${service.name}`;
+      task.progress_by_time = true;
+      task.label.value = service.name;
+      task.label.length = 20;
+      task.state = 'paused';
+      task_list.tasks.push (task);
+
+      while (!check_stoppable (service.name, services, stopped))
+        await delay (100);
+      task.state = 'running';
+      task.start_timer ();
+      await service.down (
+        (label) => (message) => task_list.log ({ label, message })
+      );
+      task.completed = true;
+      task.stop_timer (true);
+      stopped.push (service.name);
+    }) ());
+  }
+  task_list.update ();
+  await Promise.all (threads);
+  await task_list.await_end ();
 }
 
 export async function do_pull (store: Store): Promise<void> {
@@ -145,34 +207,41 @@ export async function do_pull (store: Store): Promise<void> {
   const task_list = new TaskListVertical;
 
   for (const buildable_service of buildable) {
-    const tl = new TaskListHorizontal;
-    task_list.tasks.push (tl);
-    tl.label = `Building ${buildable_service.name}`;
-    tl.label_length = 20;
-    tl.display_percentage = false;
-    const task = new Task;
-    tl.tasks.push (task);
-    task.progress = 0.5;
-    tasks.push (exec_command ('docker', [
-      'compose',
-      'build'
-    ], buildable_service.directory)
-      .then (() => {
-        task.progress = 1;
+    const task = new TaskHorizontal;
+    task_list.tasks.push (task);
+    task.label.value = `Building ${buildable_service.name}`;
+    task.label.length = 20;
+    task.progress_by_time = true;
+    task.start_timer ();
+    task.task_id = `build_${buildable_service.name}`;
+    tasks.push (exec_command (
+      'docker',
+      [
+        'compose',
+        'build'
+      ],
+      (label: string) => (message: string) => task_list.log (
+        { label, message }
+      ),
+      buildable_service.directory
+    )
+      .then (async () => {
         task.completed = true;
+        await task.stop_timer (true);
       }));
   }
 
   for (const pullable of images) {
     const tl = new TaskListHorizontal;
     task_list.tasks.push (tl);
-    tl.label_length = 20;
+    tl.label.length = 20;
     tasks.push (pull_image (pullable, tl));
   }
 
   task_list.update ();
 
   await Promise.all (tasks);
+  await task_list.await_end ();
 }
 
 export async function do_create_filter (store: Store): Promise<void> {
