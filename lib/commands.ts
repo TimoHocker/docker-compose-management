@@ -145,8 +145,9 @@ export async function do_up (
           await task.stop_timer (true);
           task.completed = true;
           started.push (service.name);
-          log(`${service.name} started`);
-          log(`Started: ${started.length}/${store.services.length}, remaining: ${queue.length}`);
+          log (`${service.name} started`);
+          log (`Started: ${started.length}/${store.services.length
+          }, remaining: ${queue.length}`);
         }
         res ();
       }
