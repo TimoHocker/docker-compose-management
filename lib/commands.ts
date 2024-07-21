@@ -115,7 +115,6 @@ export async function do_up (
   log ('Queue:', queue.map ((s) => s.name));
 
   const task_list = new TaskListVertical;
-  task_list.clear_completed = true;
   debug.log = task_list.log.bind (task_list);
 
   const threads = [];
@@ -146,6 +145,8 @@ export async function do_up (
           await task.stop_timer (true);
           task.completed = true;
           started.push (service.name);
+          log(`${service.name} started`);
+          log(`Started: ${started.length}/${store.services.length}, remaining: ${queue.length}`);
         }
         res ();
       }
