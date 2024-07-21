@@ -116,6 +116,7 @@ export async function do_up (
 
   const task_list = new TaskListVertical;
   task_list.clear_completed = true;
+  debug.log = task_list.log.bind (task_list);
 
   const threads = [];
   for (let i = 0; i < 4; i++) {
@@ -156,6 +157,7 @@ export async function do_up (
   task_list.update ();
   await Promise.all (threads);
   await task_list.await_end ();
+  debug.log = console.log.bind (console);
   log ('All services started');
 }
 
@@ -164,6 +166,7 @@ export async function do_down (store: Store): Promise<void> {
   const stopped: string[] = [];
   const services = [ ...store.services ];
   const task_list = new TaskListVertical;
+  debug.log = task_list.log.bind (task_list);
   for (const service of services) {
     threads.push ((async () => {
       const task = new TaskHorizontal;
@@ -189,6 +192,7 @@ export async function do_down (store: Store): Promise<void> {
   task_list.update ();
   await Promise.all (threads);
   await task_list.await_end ();
+  debug.log = console.log.bind (console);
 }
 
 export async function do_pull (store: Store): Promise<void> {
@@ -205,6 +209,7 @@ export async function do_pull (store: Store): Promise<void> {
 
   const tasks = [];
   const task_list = new TaskListVertical;
+  debug.log = task_list.log.bind (task_list);
 
   for (const buildable_service of buildable) {
     const task = new TaskHorizontal;
@@ -242,6 +247,7 @@ export async function do_pull (store: Store): Promise<void> {
 
   await Promise.all (tasks);
   await task_list.await_end ();
+  debug.log = console.log.bind (console);
 }
 
 export async function do_create_filter (store: Store): Promise<void> {
