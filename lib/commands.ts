@@ -145,6 +145,7 @@ export async function do_up (
           );
           await task.stop_timer (true);
           task.completed = true;
+          task.state = 'successful';
           started.push (service.name);
           log (`${service.name} started`);
           log (`Started: ${started.length}/${store.services.length
@@ -188,6 +189,7 @@ export async function do_down (store: Store): Promise<void> {
         (label) => (message) => task_list.log ({ label, message })
       );
       task.completed = true;
+      task.state = 'successful';
       task.stop_timer (true);
       stopped.push (service.name);
     }) ());
@@ -235,6 +237,7 @@ export async function do_pull (store: Store): Promise<void> {
     )
       .then (async () => {
         task.completed = true;
+        task.state = 'successful';
         await task.stop_timer (true);
       }));
   }

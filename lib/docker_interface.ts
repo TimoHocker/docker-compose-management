@@ -34,6 +34,7 @@ export function pull_image (
           const task = new Task;
           task_list.tasks.push (task);
           task.completed = true;
+          task.state = 'successful';
           task.progress = 1;
         }
         resolve ();
@@ -60,32 +61,38 @@ export function pull_image (
             task.color = chalk.green;
             task.progress = 1;
             task.completed = true;
+            task.state = 'successful';
             break;
           case 'Waiting':
             task.progress = 0.25;
-            task.color = chalk.gray;
+            task.state = 'paused';
             break;
           case 'Pulling fs layer':
             task.progress = 0;
+            task.state = 'running';
             task.color = chalk.white;
             break;
           case 'Extracting':
             task.progress = 0.5 + (0.5 * content.progressDetail.current
             / content.progressDetail.total);
             task.color = chalk.cyan;
+            task.state = 'running';
             break;
           case 'Downloading':
             task.progress = (0.5 * content.progressDetail.current
             / content.progressDetail.total);
             task.color = chalk.white;
+            task.state = 'running';
             break;
           case 'Download complete':
             task.progress = 0.5;
             task.color = chalk.gray;
+            task.state = 'running';
             break;
           case 'Verifying Checksum':
             task.progress = 0.5;
             task.color = chalk.yellow;
+            task.state = 'running';
             break;
           default:
             break;
