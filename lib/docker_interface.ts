@@ -19,17 +19,33 @@ function get_task (
 
 export function pull_image (
   image: string,
-  task_list: TaskListHorizontal
+  task_list: TaskListHorizontal,
+  log_err: (err: string) => void
 ): Promise<void> {
   task_list.label.value = `Pulling ${image}`;
   const tasks: Record<string, Task> = {};
 
   return new Promise<void> ((resolve) => {
+    let failed = false;
     docker.pull (image, (err: string, stream: Stream) => {
-      if (err)
-        throw new Error (err);
-
+      if (err) {
+        for (const existing of task_list.tasks) {
+          existing.completed = true;
+          existing.progress = 1;
+          existing.state = 'skipped';
+        }
+        const task = new Task;
+        task_list.tasks.push (task);
+        task.completed = true;
+        task.progress = 1;
+        task.state = 'failed';
+        log_err (err);
+        failed = true;
+        resolve ();
+      }
       stream.on ('end', () => {
+        if (failed)
+          return;
         if (task_list.tasks.length === 0) {
           const task = new Task;
           task_list.tasks.push (task);
@@ -40,6 +56,8 @@ export function pull_image (
         resolve ();
       });
       stream.on ('data', (data: string) => {
+        if (failed)
+          return;
         const content = JSON.parse (data);
 
         if (![

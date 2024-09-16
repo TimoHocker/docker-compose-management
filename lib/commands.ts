@@ -9,6 +9,7 @@ import {
   TaskListVertical
 } from '@sapphirecode/tasks';
 import debug from 'debug';
+import chalk from 'chalk';
 import { Store } from './store';
 import { exec_command } from './exec';
 import { Service } from './classes/Service';
@@ -239,6 +240,16 @@ export async function do_pull (store: Store): Promise<void> {
         task.completed = true;
         task.state = 'successful';
         await task.stop_timer (true);
+      })
+      .catch (async (e) => {
+        task.completed = true;
+        task.state = 'failed';
+        await task.stop_timer (false);
+        task_list.log ({
+          label:       buildable_service.name,
+          message:     e.message,
+          label_color: chalk.red
+        });
       }));
   }
 
@@ -246,7 +257,15 @@ export async function do_pull (store: Store): Promise<void> {
     const tl = new TaskListHorizontal;
     task_list.tasks.push (tl);
     tl.label.length = 20;
-    tasks.push (pull_image (pullable, tl));
+    tasks.push (pull_image (
+      pullable,
+      tl,
+      (msg) => task_list.log ({
+        label:       pullable,
+        message:     msg,
+        label_color: chalk.red
+      })
+    ));
   }
 
   task_list.update ();
