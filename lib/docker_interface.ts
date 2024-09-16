@@ -42,6 +42,7 @@ export function pull_image (
         log_err (err);
         failed = true;
         resolve ();
+        return;
       }
       stream.on ('end', () => {
         if (failed)
