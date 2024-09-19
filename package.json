@@ -1,6 +1,6 @@
 {
   "name": "@sapphirecode/dcm",
-  "version": "1.2.19",
+  "version": "1.2.20",
   "main": "index.js",
   "description": "Managing docker compose configurations, volumes and networks",
   "repository": {

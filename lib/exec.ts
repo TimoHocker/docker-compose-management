@@ -21,10 +21,11 @@ function spawn_command (
     proc.on ('close', (code) => {
       log (`${command} ${args.join (' ')} exited with code ${code}`);
       if (code !== 0) {
-        throw new Error (
+        reject (new Error (
           `${command} ${args.join (' ')} exited with code ${code}`
-        );
+        ));
       }
+
       resolve (data);
     });
     proc.on ('error', (err) => {
