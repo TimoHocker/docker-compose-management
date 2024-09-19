@@ -231,16 +231,11 @@ export async function do_pull (store: Store): Promise<void> {
         'compose',
         'build'
       ],
-      (label: string) => (message: string) => task_list.log (
-        { label, message }
+      (message: string) => task_list.log (
+        { label: buildable_service.name, message }
       ),
       buildable_service.directory
     )
-      .then (async () => {
-        task.completed = true;
-        task.state = 'successful';
-        await task.stop_timer (true);
-      })
       .catch (async (e) => {
         task.completed = true;
         task.state = 'failed';
@@ -250,7 +245,12 @@ export async function do_pull (store: Store): Promise<void> {
           message:     e.message,
           label_color: chalk.red
         });
-      }));
+      }))
+      .then (async () => {
+        task.completed = true;
+        task.state = 'successful';
+        await task.stop_timer (true);
+      });
   }
 
   for (const pullable of images) {
