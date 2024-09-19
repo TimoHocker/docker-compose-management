@@ -245,12 +245,12 @@ export async function do_pull (store: Store): Promise<void> {
           message:     e.message,
           label_color: chalk.red
         });
-      }))
+      })
       .then (async () => {
         task.completed = true;
         task.state = 'successful';
         await task.stop_timer (true);
-      });
+      }));
   }
 
   for (const pullable of images) {
