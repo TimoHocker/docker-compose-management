@@ -15,7 +15,7 @@ function spawn_command (
 ): Promise<string> {
   log (`spawn_command: ${command} ${args.join (' ')}`);
   log (`cwd: ${cwd}`);
-  return new Promise<string> ((resolve) => {
+  return new Promise<string> ((resolve, reject) => {
     const proc = spawn (command, args, { cwd, stdio: 'pipe' });
     let data = '';
     proc.on ('close', (code) => {
@@ -26,6 +26,9 @@ function spawn_command (
         );
       }
       resolve (data);
+    });
+    proc.on ('error', (err) => {
+      reject (err);
     });
     let stdout_line = '';
     let stderr_line = '';
