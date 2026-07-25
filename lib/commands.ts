@@ -12,7 +12,7 @@ import debug from 'debug';
 import chalk from 'chalk';
 import {type Store} from './store';
 import {exec_command} from './exec';
-import {type Service} from './classes/Service';
+import {type Service} from './classes/service';
 import {pull_image} from './docker-interface';
 import {delay} from './util';
 
@@ -43,7 +43,7 @@ function check_stoppable(
 	stopped: string[],
 ): boolean {
 	const sublog = log.extend('check_stoppable');
-	const depending = services.filter(s => s.depends_on.includes(service));
+	const depending = services.filter(s => s.dependsOn.includes(service));
 	const missing = depending.filter(dep => !stopped.includes(dep.name));
 	sublog('Stoppable:', missing.length === 0, 'missing:', missing);
 	return missing.length === 0;
@@ -60,20 +60,20 @@ function build_queue(store: Store, include_passive: boolean) {
 			assert.ok(
 				passes < 128,
 				`Maximum depth reached. Circular dependency detected\n${
-					services.map(s => `[${s.name}] ${s.depends_on.join(', ')}`)
+					services.map(s => `[${s.name}] ${s.dependsOn.join(', ')}`)
 						.join('\n')}`,
 			);
 		}
 
 		index %= services.length;
 		const service = services[index];
-		if (service.passive && !include_passive) {
+		if (service.isPassive && !include_passive) {
 			log(`Skipping passive service ${service.name}`);
 			services.splice(index, 1);
 			continue;
 		}
 
-		const waiting_for = service.depends_on.filter(dep => {
+		const waiting_for = service.dependsOn.filter(dep => {
 			const active = queue.filter(s => s.name === dep).length;
 			return active === 0;
 		});
@@ -133,7 +133,7 @@ export async function do_up(
 		threads.push(new Promise<void>(async (res, reject) => {
 			try {
 				while (queue.length > 0) {
-					const service = queue.shift();
+					const service = queue.shift()!;
 					assert.notStrictEqual(service, undefined);
 					log(`Checking ${service.name}`);
 					const task = new TaskHorizontal();
@@ -143,7 +143,7 @@ export async function do_up(
 					task.label.length = 20;
 					task.state = 'paused';
 					task_list.tasks.push(task);
-					while (!check_startable(service.depends_on, started)) {
+					while (!check_startable(service.dependsOn, started)) {
 						await delay(100);
 					}
 

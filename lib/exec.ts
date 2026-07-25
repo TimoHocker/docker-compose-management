@@ -11,7 +11,7 @@ async function spawn_command(
 	command: string,
 	args: string[],
 	cwd: string,
-	logger: Logger | undefined = null,
+	logger?: Logger | null,
 ): Promise<string> {
 	log(`spawn_command: ${command} ${args.join(' ')}`);
 	log(`cwd: ${cwd}`);

@@ -2,9 +2,9 @@ import fs from 'node:fs/promises';
 import assert from 'node:assert';
 import YAML from 'yaml';
 import {debug} from 'debug';
-import {Network} from './classes/Network';
-import {Service} from './classes/Service';
-import {Volume} from './classes/Volume';
+import {Network} from './classes/network';
+import {Service} from './classes/service';
+import {Volume} from './classes/volume';
 import {run_command} from './exec';
 
 const log = debug('sapphirecode:dcm:store');
@@ -124,8 +124,8 @@ export class Store {
 
 			if (dependencies[file] !== undefined) {
 				if (Array.isArray(dependencies[file])) {
-					service.depends_on = dependencies[file] as string[];
-					log(`${file}: dependencies: ${service.depends_on}`);
+					service.dependsOn = dependencies[file] as string[];
+					log(`${file}: dependencies: ${service.dependsOn}`);
 				} else {console.warn(`${file}: dependencies is not an array`);
 }
 			}
@@ -134,9 +134,9 @@ export class Store {
 
 			assert.strictEqual(typeof contents.services, 'object', `no service configuration in ${service.compose_file}`);
 
-			const images = Object.values(contents.services)
-				.map(value => value.image)
-				.filter((v, i, a) => a.indexOf(v === i));
+			const images = Object.values(contents.services as Record<string, unknown>)
+				.map(value => (value as Record<string, unknown>).image)
+				.filter((v, i, a) => a.indexOf(v) === i);
 
 			service.images = images.filter(v => typeof v === 'string');
 			service.buildable = images.length > service.images.length;
@@ -145,7 +145,7 @@ export class Store {
 		}
 
 		for (const service of services) {
-			service.depends_on = service.depends_on.filter(d => {
+			service.dependsOn = service.dependsOn.filter(d => {
 				if (typeof d !== 'string') {
 					console.warn(`${service.name}: dependency is not a string`);
 					return false;
@@ -165,7 +165,7 @@ export class Store {
 		let last = 0;
 		while (services.length > added.length) {
 			for (const service of services) {
-				if (added.includes(service.name) || service.depends_on.some(v => !added.includes(v))) {
+				if (added.includes(service.name) || service.dependsOn.some(v => !added.includes(v))) {
 					continue;
 				}
 
@@ -174,7 +174,7 @@ export class Store {
 			}
 
 			if (last === added.length) {
-				console.warn(services.map(s => `${s.name} depends on: ${s.depends_on.join(', ')}`));
+				console.warn(services.map(s => `${s.name} depends on: ${s.dependsOn.join(', ')}`));
 				throw new Error('circular dependency detected');
 			}
 
