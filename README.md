@@ -1,6 +1,6 @@
 # Docker-Compose Management
 
-Version: 1.2.0
+Version: 1.2.21
 
 Open docker-compose management cli
 
@@ -43,22 +43,22 @@ Global Options:
 
 This command simply pulls all images and exits.
 
-2. Starting services: `up`
+1. Starting services: `up`
 
 This command starts all services in the correct order and creates the necessary
 networks and volumes if they don't already exist. Available options are:
 `--pull` to pull images before starting the services and `--include-passive` to
 include passive services.
 
-3. Stopping services: `down`
+1. Stopping services: `down`
 
 Stops all services including the passive ones.
 
-4. Restarting services: `restart`
+1. Restarting services: `restart`
 
 Restarts all services, has the same effect as running `down` and `up`
 separately.
 
-5. Creating a backup filter: `create_filter`
+1. Creating a backup filter: `create_filter`
 
 Creates a filter file for rsync to create a backup of all configured volumes.

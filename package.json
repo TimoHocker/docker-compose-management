@@ -1,6 +1,6 @@
 {
   "name": "@sapphirecode/dcm",
-  "version": "1.2.20",
+  "version": "1.2.21",
   "main": "index.js",
   "description": "Managing docker compose configurations, volumes and networks",
   "repository": {
@@ -13,7 +13,7 @@
   },
   "author": {
     "name": "Timo Hocker",
-    "email": "timo@scode.ovh"
+    "email": "timo@sapphirecode.de"
   },
   "keywords": [
     "docker",
@@ -22,20 +22,15 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@sapphirecode/eslint-config-ts": "^1.2.2",
     "@types/debug": "^4.1.12",
-    "@types/dockerode": "^3.3.23",
-    "@types/jasmine": "^5.1.4",
-    "@types/node": "^22.13.14",
-    "eslint": "^8.48.0",
-    "jasmine": "^5.1.0",
-    "nyc": "^17.0.0",
+    "@types/dockerode": "^4.0.1",
+    "@types/node": "^26.1.1",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "typescript": "^7.0.2",
+    "xo": "^4.0.0"
   },
   "scripts": {
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.vue,.mjs",
-    "test": "nyc jasmine --config=\"jasmine.json\"",
+    "lint": "xo",
     "pretest": "yarn compile",
     "compile": "tsc",
     "precompile": "rm -rf dist"
@@ -47,11 +42,11 @@
   ],
   "dependencies": {
     "@sapphirecode/tasks": "^2.0.3",
-    "chalk": "4",
+    "chalk": "^5.6.2",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.0",
+    "class-validator": "^0.15.1",
     "debug": "^4.3.4",
-    "dockerode": "^4.0.0",
+    "dockerode": "^5.0.1",
     "reflect-metadata": "^0.2.2",
     "yaml": "^2.3.4"
   }
